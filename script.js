@@ -1,4 +1,4 @@
-// ─── GLOBAL STATE ────────────────────────────────────────────
+//  GLOBAL STATE 
 let map;
 let currentIndex = 0;
 let score = 0;
@@ -8,10 +8,8 @@ let markers = [];
 let sessionLocations = []; // the 5 randomly picked buildings for this game
 
 
-// ─── ALL CSUN BUILDINGS ──────────────────────────────────────
 // center = exact coordinates from Google Maps right-click
 // bounds = ±0.00025 degrees around center (~25m radius)
-// To add more: right-click building on maps.google.com, paste coords here
 
 const allLocations = [
   {
@@ -137,7 +135,7 @@ const allLocations = [
 ];
 
 
-// ─── SHUFFLE ─────────────────────────────────────────────────
+//  SHUFFLE
 // Fisher-Yates shuffle — returns a new randomized copy of the array
 
 function shuffleArray(arr) {
@@ -149,7 +147,7 @@ function shuffleArray(arr) {
   return shuffled;
 }
 
-// Always includes The Soraya + 4 random others, in a random order
+//  The Soraya + 4 random others, in a random order
 function pickSessionLocations() {
   const soraya = allLocations.find(function(l) { return l.name === "The Soraya"; });
   const others = allLocations.filter(function(l) { return l.name !== "The Soraya"; });
@@ -157,7 +155,7 @@ function pickSessionLocations() {
 }
 
 
-// ─── INIT MAP ────────────────────────────────────────────────
+//  INIT MAP 
 // Called automatically by Google Maps via callback=initMap
 
 function initMap() {
@@ -180,7 +178,6 @@ function initMap() {
       strictBounds: false
     },
 
-    // We handle double-click ourselves for the game
     disableDoubleClickZoom: true,
 
     // Minimal UI
@@ -219,7 +216,7 @@ function initMap() {
 }
 
 
-// ─── SHOW PROMPT ─────────────────────────────────────────────
+//  SHOW PROMPT 
 // Updates the blue sidebar box with the current question
 
 function showPrompt() {
@@ -232,7 +229,7 @@ function showPrompt() {
 }
 
 
-// ─── CHECK IF CLICK IS INSIDE BUILDING BOUNDS ────────────────
+//  CHECK IF CLICK IS INSIDE BUILDING BOUNDS 
 // Returns true if the click landed inside the building rectangle
 // .lat() and .lng() are methods on Google Maps LatLng objects
 
@@ -248,7 +245,6 @@ function isInsideBounds(latLng, bounds) {
 }
 
 
-// ─── DRAW RECTANGLE ──────────────────────────────────────────
 // Green = correct, Red = wrong — drawn over the building's real location
 
 function drawRectangle(bounds, isCorrect) {
@@ -269,7 +265,7 @@ function drawRectangle(bounds, isCorrect) {
 
 
 
-// ─── UPDATE SCORE BAR ────────────────────────────────────────
+//  UPDATE SCORE BAR 
 // Refreshes the live ✓ / ✗ / remaining counters after each guess
 
 function updateScoreBar() {
@@ -283,7 +279,7 @@ function updateScoreBar() {
 }
 
 
-// ─── ADD TO HISTORY ──────────────────────────────────────────
+//  ADD TO HISTORY 
 // Appends the completed question + result to the sidebar log
 
 function addToHistory(name, isCorrect) {
@@ -297,7 +293,7 @@ function addToHistory(name, isCorrect) {
 }
 
 
-// ─── SHOW FINAL SCORE ────────────────────────────────────────
+//  SHOW FINAL SCORE 
 // Called after all 5 questions — shows result + percentage + play again button
 
 function showFinalScore() {
@@ -321,7 +317,7 @@ function showFinalScore() {
 }
 
 
-// ─── RESET GAME ──────────────────────────────────────────────
+//  RESET GAME 
 // Clears all state and picks a fresh random set of 5 buildings
 
 function resetGame() {
@@ -357,7 +353,7 @@ function resetGame() {
 }
 
 
-// ─── HANDLE GUESS ────────────────────────────────────────────
+//  HANDLE GUESS 
 // Main logic hub — fires on every double click
 
 function handleGuess(latLng) {
@@ -384,7 +380,7 @@ function handleGuess(latLng) {
 }
 
 
-// ─── SHOW MARKER ─────────────────────────────────────────────
+//  SHOW MARKER 
 // EXTRA CREDIT: Marker Animation — BOUNCE on correct, DROP on wrong
 // Docs: https://developers.google.com/maps/documentation/javascript/markers#animate
 
@@ -406,7 +402,7 @@ function showMarker(center, isCorrect) {
 }
 
 
-// ─── SHOW STREET VIEW (EXTRA CREDIT — STREET VIEW) ───────────
+//  SHOW STREET VIEW (EXTRA CREDIT — STREET VIEW) 
 // Reveals the hidden panel and loads a panorama of the building
 
 function showStreetView(center) {
