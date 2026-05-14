@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CSUN Map Quiz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="container">
+
+    <div id="sidebar">
+      <h2>Map Quiz. Please double click<br>on the map the location of:</h2>
+
+      <!-- Current question prompt -->
+      <div id="current-prompt"></div>
+
+      <!-- Live score bar — updates after each guess -->
+      <div id="score-bar">
+        <span class="correct-label">✓ <span id="score-correct">0</span></span>
+        <span class="wrong-label">✗ <span id="score-wrong">0</span></span>
+        <span class="remain-label">Left: <span id="score-remaining">5</span></span>
+      </div>
+
+      <!-- History log — each completed question appended here -->
+      <div id="history"></div>
+
+      <!-- Street View panel — hidden until after first guess -->
+      <div id="street-view"></div>
+
+      <!-- Final score shown after all 5 questions -->
+      <div id="final-score"></div>
+    </div>
+
+    <div id="map"></div>
+
+  </div>
+
+  <!-- jQuery must load before app.js so $ is available -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- callback=initMap tells Google to call your initMap() when it finishes loading -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAczJVb_-U_XpOXDMlE1nODMDv91Qn2vXU&callback=initMap&loading=async"
+    async defer>
+  </script>
+
+  <!-- Your code loads last so jQuery and Google Maps are already ready -->
+  <script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+/* Wipes browser default margins/padding and fixes box sizing */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Tan background from the screenshot */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #d4c5a0;
+}
+
+/* Flexbox makes sidebar and map sit side by side */
+#container {
+  display: flex;
+  height: 100vh; /* full browser window height */
+}
+
+/* Fixed width left panel */
+#sidebar {
+  width: 320px;
+  padding: 20px;
+  background-color: #d4c5a0;
+  overflow-y: auto; /* scrolls if history gets too long */
+}
+
+/* Map takes all remaining space after the sidebar */
+#map {
+  flex: 1;
+  height: 100vh; /* required — Google Maps needs explicit height or renders invisible */
+}
+
+/* Blue box showing the current question */
+#current-prompt {
+  background-color: #2e6da4;
+  color: white;
+  padding: 4px 8px;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+/* Each completed question in the history log — same blue style */
+/* This is a class not an id because there will be multiple of them */
+.history-item {
+  background-color: #2e6da4;
+  color: white;
+  padding: 4px 8px;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+}
+
+/* Green text for correct answers */
+.correct-msg {
+  color: #00cc00;
+  font-size: 0.85rem;
+  padding: 2px 8px;
+}
+
+/* Red text for wrong answers */
+.wrong-msg {
+  color: #ff2222;
+  font-size: 0.85rem;
+  padding: 2px 8px;
+}
+
+/* Big bold final score display */
+#final-score {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-top: 20px;
+  line-height: 1.2;
+}
+
+/* Street View panel — hidden by default, shown after each guess */
+/* Needs explicit height or Street View renders invisible just like the map */
+#street-view {
+  width: 100%;
+  height: 200px;
+  margin-top: 12px;
+  border-radius: 8px;
+  display: none;
+}
+
+/* Live score bar */
+#score-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.correct-label { color: #00cc00; }
+.wrong-label   { color: #ff2222; }
+.remain-label  { color: #555;    }
+
+/* Percentage label under final score */
+.pct-label {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: normal;
+  margin-top: 4px;
+}
+
+/* Play Again button */
+#play-again {
+  display: block;
+  margin-top: 16px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: #2e6da4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#play-again:hover {
+  background-color: #1a4f7a;
+}
