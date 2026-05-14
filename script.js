@@ -11,7 +11,7 @@ let timerInterval = null;
 
 
 // center = exact coordinates from Google Maps right-click
-// bounds = ±0.00025 degrees around center (~25m radius)
+// bounds = 0.00025 degrees around center (~25m radius)
 
 const allLocations = [
   {
@@ -332,6 +332,7 @@ function resetGame() {
   $("#history").empty();
   $("#final-score").empty();
   $("#street-view").hide();
+  $("#distance-msg").hide();
 
   // Pick a new random set of 5 buildings
   sessionLocations = pickSessionLocations();
@@ -371,6 +372,7 @@ function handleGuess(latLng) {
 
   drawRectangle(loc.bounds, isCorrect);
   addToHistory(loc.name, isCorrect);
+  showDistance(latLng, loc.center);
   showStreetView(loc.center);
 
   if (isCorrect) score++;
@@ -385,9 +387,29 @@ function handleGuess(latLng) {
   }
 }
 
+// EXTRA 2: Distance Matrix Service — shows how far the player's click was from the correct building center in meters
+// Docs: https://developers.google.com/maps/documentation/javascript/distancematrix
+
+function showDistance(clickedLatLng, correctCenter) {
+  const service = new google.maps.DistanceMatrixService();
+  service.getDistanceMatrix(
+    {
+      origins: [clickedLatLng],
+      destinations: [new google.maps.LatLng(correctCenter.lat, correctCenter.lng)],
+      travelMode: google.maps.TravelMode.WALKING
+    },
+    function(response, status) {
+      if (status === "OK") {
+        const meters = response.rows[0].elements[0].distance.value;
+        const feet = Math.round(meters * 3.28);
+        $("#distance-msg").text("You were " + feet + " ft away").show();
+      }
+    }
+  );
+}
 
 
-//  SHOW STREET VIEW 
+//  SHOW STREET VIEW
 // Reveals the hidden panel and loads a panorama of the building
 
 function showStreetView(center) {

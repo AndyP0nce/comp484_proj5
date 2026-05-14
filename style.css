@@ -72,6 +72,16 @@ body {
   line-height: 1.2;
 }
 
+/* Distance feedback message */
+#distance-msg {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #333;
+  padding: 4px 8px;
+  margin-bottom: 6px;
+  display: none;
+}
+
 /* Street View panel — hidden by default, shown after each guess */
 /* Needs explicit height or Street View renders invisible just like the map */
 #street-view {
