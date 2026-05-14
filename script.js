@@ -198,6 +198,12 @@ function initMap() {
   // Fit the initial view to show the whole campus
   map.fitBounds(campusBounds);
 
+  // EXTRA CREDIT: Bicycle Layer — shows bike lanes and paths on campus
+  // Docs: https://developers.google.com/maps/documentation/javascript/examples/layer-bicycling
+  const bikeLayer = new google.maps.BicyclingLayer();
+  bikeLayer.setMap(map);
+
+
   // Pick 5 random buildings from the full pool for this session
   sessionLocations = pickSessionLocations();
 
