@@ -4,8 +4,10 @@ let currentIndex = 0;
 let score = 0;
 let gameOver = false;
 let rectangles = [];
-let markers = [];
 let sessionLocations = []; // the 5 randomly picked buildings for this game
+let timerStart = null;
+let timerEnd = null;
+let timerInterval = null;
 
 
 // center = exact coordinates from Google Maps right-click
@@ -160,31 +162,16 @@ function pickSessionLocations() {
 
 function initMap() {
 
-  // Campus boundary — one block past each edge for wiggle room
-  const campusBounds = new google.maps.LatLngBounds(
-    new google.maps.LatLng(34.2340, -118.5360), // SW — past Nordhoff/Reseda
-    new google.maps.LatLng(34.2460, -118.5220)  // NE — past Halsted/Zelzah
-  );
-
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 34.2400, lng: -118.5290 },
-    zoom: 16,
+    center: { lat: 34.239031878945795, lng:  -118.52822139177032 },
+    zoom: 17,
 
-    // EXTRA CREDIT: Map Restrictions — keeps the player within the CSUN campus area
-    // Docs: https://developers.google.com/maps/documentation/javascript/reference/map#MapRestriction
-    gestureHandling: "greedy",
-    restriction: {
-      latLngBounds: campusBounds.toJSON(),
-      strictBounds: false
-    },
-
+    gestureHandling: "none",
+    draggable: false,
+    scrollwheel: false,
     disableDoubleClickZoom: true,
-
-    // Minimal UI
-    zoomControl: true,
-    streetViewControl: false,
-    mapTypeControl: false,
-    fullscreenControl: false,
+    keyboardShortcuts: false,
+    disableDefaultUI: true,
 
     // Hide every label on the map so building names don't spoil the quiz
     styles: [
@@ -192,10 +179,8 @@ function initMap() {
     ]
   });
 
-  // Fit the initial view to show the whole campus
-  map.fitBounds(campusBounds);
-
-  // EXTRA CREDIT: Bicycle Layer — shows bike lanes and paths on campus
+  //  EXTRA #1: Bicycle Layer 
+  // Overlays bike lanes and paths on the campus map.
   // Docs: https://developers.google.com/maps/documentation/javascript/examples/layer-bicycling
   const bikeLayer = new google.maps.BicyclingLayer();
   bikeLayer.setMap(map);
@@ -214,7 +199,6 @@ function initMap() {
     handleGuess(event.latLng);
   });
 }
-
 
 //  SHOW PROMPT 
 // Updates the blue sidebar box with the current question
@@ -266,7 +250,7 @@ function drawRectangle(bounds, isCorrect) {
 
 
 //  UPDATE SCORE BAR 
-// Refreshes the live ✓ / ✗ / remaining counters after each guess
+// Refreshes the live remaining counters after each guess
 
 function updateScoreBar() {
   const answered = currentIndex;
@@ -283,7 +267,7 @@ function updateScoreBar() {
 // Appends the completed question + result to the sidebar log
 
 function addToHistory(name, isCorrect) {
-  const resultText = isCorrect ? "✓ Correct!" : "✗ Wrong";
+  const resultText = isCorrect ? " Correct!" : " Wrong";
   const resultClass = isCorrect ? "correct-msg" : "wrong-msg";
 
   const historyItem = $("<div>").addClass("history-item").text(name);
@@ -297,16 +281,25 @@ function addToHistory(name, isCorrect) {
 // Called after all 5 questions — shows result + percentage + play again button
 
 function showFinalScore() {
+  timerEnd = Date.now();
+  clearInterval(timerInterval);
   gameOver = true;
   $("#current-prompt").hide();
   $("#score-bar").hide();
 
   const incorrect = sessionLocations.length - score;
   const pct = Math.round((score / sessionLocations.length) * 100);
+  const elapsed = timerStart ? Math.round((timerEnd - timerStart) / 1000) : 0;
+  const mins = Math.floor(elapsed / 60);
+  const secs = elapsed % 60;
+  const timeStr = mins > 0
+    ? mins + "m " + secs + "s"
+    : secs + "s";
 
   $("#final-score").html(
-    score + " Correct, " + incorrect + " Incorrect<br>" +
+    "<span style='color:#00cc00'>" + score + " Correct</span>, <span style='color:#ff2222'>" + incorrect + " Wrong</span><br>" +
     "<span class='pct-label'>" + pct + "%</span>" +
+    "<span class='time-label'>Time: " + timeStr + "</span>" +
     "<button id='play-again'>Play Again</button>"
   );
 
@@ -325,14 +318,15 @@ function resetGame() {
   rectangles.forEach(function(r) { r.setMap(null); });
   rectangles = [];
 
-  // Clear all markers from the map
-  markers.forEach(function(m) { m.setMap(null); });
-  markers = [];
-
   // Reset state
   currentIndex = 0;
   score = 0;
   gameOver = false;
+  timerStart = null;
+  timerEnd = null;
+  clearInterval(timerInterval);
+  timerInterval = null;
+  $("#live-timer").text("Time: 0s");
 
   // Clear sidebar
   $("#history").empty();
@@ -359,13 +353,25 @@ function resetGame() {
 function handleGuess(latLng) {
   if (gameOver) return;
 
+  // ── EXTRA CREDIT #2: Live Timer ──────────────────────────────────────────────
+  // Starts on the first guess, counts up every second, stops after the last guess,
+  // and displays the final elapsed time on the score screen.
+  if (currentIndex === 0) {
+    timerStart = Date.now();
+    timerInterval = setInterval(function() {
+      const secs = Math.round((Date.now() - timerStart) / 1000);
+      const mins = Math.floor(secs / 60);
+      const s = secs % 60;
+      $("#live-timer").text("Time: " + (mins > 0 ? mins + "m " + s + "s" : s + "s"));
+    }, 1000);
+  }
+
   const loc = sessionLocations[currentIndex];
   const isCorrect = isInsideBounds(latLng, loc.bounds);
 
   drawRectangle(loc.bounds, isCorrect);
   addToHistory(loc.name, isCorrect);
   showStreetView(loc.center);
-  showMarker(loc.center, isCorrect);
 
   if (isCorrect) score++;
 
@@ -380,29 +386,8 @@ function handleGuess(latLng) {
 }
 
 
-//  SHOW MARKER 
-// EXTRA CREDIT: Marker Animation — BOUNCE on correct, DROP on wrong
-// Docs: https://developers.google.com/maps/documentation/javascript/markers#animate
 
-function showMarker(center, isCorrect) {
-  const marker = new google.maps.Marker({
-    position: center,
-    map: map,
-    animation: isCorrect
-      ? google.maps.Animation.BOUNCE
-      : google.maps.Animation.DROP
-  });
-  markers.push(marker);
-
-  if (isCorrect) {
-    setTimeout(function() {
-      marker.setAnimation(null);
-    }, 2000);
-  }
-}
-
-
-//  SHOW STREET VIEW (EXTRA CREDIT — STREET VIEW) 
+//  SHOW STREET VIEW 
 // Reveals the hidden panel and loads a panorama of the building
 
 function showStreetView(center) {

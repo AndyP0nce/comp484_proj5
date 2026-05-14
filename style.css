@@ -19,7 +19,7 @@ body {
 
 /* Fixed width left panel */
 #sidebar {
-  width: 320px;
+  width: 340px;
   padding: 20px;
   background-color: #d4c5a0;
   overflow-y: auto; /* scrolls if history gets too long */
@@ -37,7 +37,7 @@ body {
   color: white;
   padding: 4px 8px;
   margin-bottom: 6px;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 }
 
 /* Each completed question in the history log — same blue style */
@@ -47,20 +47,20 @@ body {
   color: white;
   padding: 4px 8px;
   margin-bottom: 4px;
-  font-size: 0.85rem;
+  font-size: 1.1rem;
 }
 
 /* Green text for correct answers */
 .correct-msg {
   color: #00cc00;
-  font-size: 0.85rem;
+  font-size: 1.1rem;
   padding: 2px 8px;
 }
 
 /* Red text for wrong answers */
 .wrong-msg {
   color: #ff2222;
-  font-size: 0.85rem;
+  font-size: 1.1rem;
   padding: 2px 8px;
 }
 
@@ -98,9 +98,26 @@ body {
 /* Percentage label under final score */
 .pct-label {
   display: block;
-  font-size: 1.1rem;
+  font-size: 1.6rem;
   font-weight: normal;
   margin-top: 4px;
+}
+
+/* Live timer shown during the game */
+#live-timer {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #2e6da4;
+}
+
+/* Elapsed time label under final score */
+.time-label {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: normal;
+  margin-top: 4px;
+  color: #555;
 }
 
 /* Play Again button */
@@ -108,7 +125,7 @@ body {
   display: block;
   margin-top: 16px;
   padding: 10px 20px;
-  font-size: 1rem;
+  font-size: 1.6rem;
   font-weight: bold;
   background-color: #2e6da4;
   color: white;
