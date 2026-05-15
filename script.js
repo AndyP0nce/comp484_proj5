@@ -354,7 +354,7 @@ function resetGame() {
 function handleGuess(latLng) {
   if (gameOver) return;
 
-  // ── EXTRA CREDIT #2: Live Timer ──────────────────────────────────────────────
+  // ── EXTRA CREDIT #: Live Timer ──────────────────────────────────────────────
   // Starts on the first guess, counts up every second, stops after the last guess,
   // and displays the final elapsed time on the score screen.
   if (currentIndex === 0) {
